@@ -3,6 +3,7 @@
   flex-wrap: wrap;
   justify-content: space-around;
   max-height: 30vh;
+  height: 30vh;
   overflow-y: scroll;
   margin-bottom: 1rem;
   align-items: center;
@@ -28,9 +29,19 @@
   font-weight: 100;
   cursor: pointer;
 }
+@media (min-width: 450px) {
+  .note-heading {
+    font-size: 2rem; /* Subtracting 10px for margin between the columns */
+    padding: 0.6rem 1rem;
+  }
+  .editor-pane {
+    top: 30vh;
+  }
+}
+
 .editor-pane {
   position: absolute;
-  top: calc(30vh+ 1rem);
+  top: (30vh + 1rem);
   box-shadow: 1px 1px 5px 1px rgb(176, 176, 176);
   border-radius: 20px;
   padding-top: 0.6rem;

@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import NoteEditor from "./components/NoteEditor";
 import NoteList from "./components/NoteList";
 import "./App.css";
-import { addDoc, doc, onSnapshot, setDoc } from "firebase/firestore";
+import { addDoc, deleteDoc, doc, onSnapshot, setDoc } from "firebase/firestore";
 import { db, notesCollection } from "./firebase";
 
 export default function App() {
@@ -13,9 +13,11 @@ export default function App() {
 
   React.useEffect(() => {
     const unsubscribe = onSnapshot(notesCollection, (snapshot) => {
-      const notes = snapshot.docs.map((doc) => {
-        return { ...doc.data(), id: doc.id };
-      });
+      const notes = snapshot.docs
+        .map((doc) => {
+          return { ...doc.data(), id: doc.id };
+        })
+        .sort((a, b) => b.updatedAt - a.updatedAt);
       setNotes(notes);
     });
 
@@ -23,7 +25,7 @@ export default function App() {
   }, []);
   React.useEffect(() => {
     const updatedNotes = notes;
-    if (currentNoteId == "" && updatedNotes.length > 0) {
+    if (currentNoteId === "" && updatedNotes.length > 0) {
       setCurrentNoteId(updatedNotes[0].id);
     }
   }, [notes]);
@@ -60,18 +62,17 @@ export default function App() {
     };
 
     const docRef = await addDoc(notesCollection, newNote);
-    console.log(docRef.data(), docRef.id);
+    console.log(docRef.data, docRef.id);
     setCurrentNoteId(docRef.id);
   }
 
-  function deleteTheNote() {
+  async function deleteTheNote() {
     const nextNoteIndex = notes.findIndex((note) => note.id !== currentNoteId);
     const nextNoteId = nextNoteIndex !== -1 ? notes[nextNoteIndex].id : "";
     setCurrentNoteId(nextNoteId);
 
-    setNotes((prevNotes) =>
-      prevNotes.filter((note) => note.id !== currentNoteId)
-    );
+    const docRef = doc(db, "notes", currentNoteId);
+    await deleteDoc(docRef);
   }
 
   return (
