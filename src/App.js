@@ -1,17 +1,19 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import NoteEditor from "./components/NoteEditor";
 import NoteList from "./components/NoteList";
 import "./App.css";
 import { addDoc, deleteDoc, doc, onSnapshot, setDoc } from "firebase/firestore";
 import { db, notesCollection } from "./firebase";
+import PreviewPane from "./components/PreviewPane";
 
 export default function App() {
   const [notes, setNotes] = useState([]);
   const [currentNoteId, setCurrentNoteId] = useState(
     notes.length > 0 ? notes[0].id : ""
   );
-
-  React.useEffect(() => {
+  const [isInPreview, setIsInPreview] = useState(true);
+  const [screenWidth, setScreenWidth] = useState(window.innerWidth);
+  useEffect(() => {
     const unsubscribe = onSnapshot(notesCollection, (snapshot) => {
       const notes = snapshot.docs
         .map((doc) => {
@@ -20,10 +22,17 @@ export default function App() {
         .sort((a, b) => b.updatedAt - a.updatedAt);
       setNotes(notes);
     });
-
     return unsubscribe;
   }, []);
-  React.useEffect(() => {
+
+  useEffect(() => {
+    function handleResize() {
+      setScreenWidth(window.innerWidth);
+    }
+    window.addEventListener("resize", handleResize);
+    return window.removeEventListener("resize", handleResize);
+  }, []);
+  useEffect(() => {
     const updatedNotes = notes;
     if (currentNoteId === "" && updatedNotes.length > 0) {
       setCurrentNoteId(updatedNotes[0].id);
@@ -41,6 +50,7 @@ export default function App() {
       { merge: true }
     );
   }
+
   async function updateNoteTitle(text) {
     const docRef = doc(db, "notes", currentNoteId);
     await setDoc(
@@ -60,7 +70,6 @@ export default function App() {
       createdAt: Date.now(),
       updatedAt: Date.now(),
     };
-
     const docRef = await addDoc(notesCollection, newNote);
     console.log(docRef.data, docRef.id);
     setCurrentNoteId(docRef.id);
@@ -84,13 +93,52 @@ export default function App() {
             currentNoteId={currentNoteId}
             setCurrentNoteId={setCurrentNoteId}
           />
-          <NoteEditor
-            currentNote={notes.find((note) => note.id === currentNoteId)}
-            updateTitle={updateNoteTitle}
-            updateBody={updateNoteBody}
-            addNote={addNewNote}
-            deleteNote={deleteTheNote}
-          />
+          {screenWidth >= 900 ? (
+            <div className="ls-right-preview">
+              <PreviewPane
+                note={notes.find((note) => note.id === currentNoteId)}
+              />
+
+              <NoteEditor
+                currentNote={notes.find((note) => note.id === currentNoteId)}
+                updateTitle={updateNoteTitle}
+                updateBody={updateNoteBody}
+                addNote={addNewNote}
+                deleteNote={deleteTheNote}
+              />
+            </div>
+          ) : (
+            <div className="ss-down-preview">
+              <div className="tab-section">
+                <button
+                  className={`tabs ${isInPreview ? "selected" : ""}`}
+                  onClick={() => setIsInPreview(true)}
+                >
+                  Preview
+                </button>
+                <button
+                  className={`tabs ${isInPreview ? "" : "selected"}`}
+                  onClick={() => setIsInPreview(false)}
+                >
+                  Edit
+                </button>
+              </div>
+
+              {isInPreview ? (
+                <PreviewPane
+                  note={notes.find((note) => note.id === currentNoteId)}
+                />
+              ) : (
+                <NoteEditor
+                  currentNote={notes.find((note) => note.id === currentNoteId)}
+                  updateTitle={updateNoteTitle}
+                  updateBody={updateNoteBody}
+                  addNote={addNewNote}
+                  deleteNote={deleteTheNote}
+                />
+              )}
+            </div>
+          )}
         </div>
       ) : (
         <div className="no-notes">
