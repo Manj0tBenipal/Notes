@@ -1,13 +1,22 @@
-import React, { useRef } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import { Editor } from "@tinymce/tinymce-react";
 
 export default function NoteEditor(props) {
+  const [screenHeight, setScreenHeight] = useState(window.innerHeight);
   const editorRef = useRef(null);
   const handleEditorSave = () => {
     const editorContent = editorRef.current.getContent();
     props.updateBody(editorContent);
   };
-
+  useEffect(() => {
+    function handleResize() {
+      setScreenHeight(window.innerHeight);
+    }
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+  const editorHeight = screenHeight - props.previewPaneHeight;
+  console.log(editorHeight);
   return (
     <section className="editor-pane">
       <div className="controls">
@@ -37,6 +46,7 @@ export default function NoteEditor(props) {
         onInit={(evt, editor) => (editorRef.current = editor)}
         initialValue={props.currentNote.body}
         init={{
+          height: editorHeight,
           menubar: false,
           plugins: [
             "a11ychecker",
@@ -63,6 +73,7 @@ export default function NoteEditor(props) {
             "help",
             "wordcount",
           ],
+
           toolbar:
             "undo redo | casechange blocks | bold italic backcolor | " +
             "alignleft aligncenter alignright alignjustify | " +

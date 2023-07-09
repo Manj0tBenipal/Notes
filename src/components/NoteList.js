@@ -3,13 +3,13 @@ export default function NoteList(props) {
   const noteList = props.notes.map((note) => {
     return (
       <button
-      key={note.id}
+        key={note.id}
         className={`note-heading ${
           props.currentNoteId === note.id ? "selected-note" : ""
         }`}
         onClick={() => props.setCurrentNoteId(note.id)}
       >
-        {note.title}{" "}
+        {note.title}
       </button>
     );
   });

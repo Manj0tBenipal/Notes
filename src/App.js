@@ -13,6 +13,8 @@ export default function App() {
   );
   const [isInPreview, setIsInPreview] = useState(true);
   const [screenWidth, setScreenWidth] = useState(window.innerWidth);
+  const [previewPaneHeight, setPreviewPaneHeight] = useState(0);
+
   useEffect(() => {
     const unsubscribe = onSnapshot(notesCollection, (snapshot) => {
       const notes = snapshot.docs
@@ -30,7 +32,7 @@ export default function App() {
       setScreenWidth(window.innerWidth);
     }
     window.addEventListener("resize", handleResize);
-    return window.removeEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
   useEffect(() => {
     const updatedNotes = notes;
@@ -93,13 +95,16 @@ export default function App() {
             currentNoteId={currentNoteId}
             setCurrentNoteId={setCurrentNoteId}
           />
+
           {screenWidth >= 900 ? (
             <div className="ls-right-preview">
               <PreviewPane
                 note={notes.find((note) => note.id === currentNoteId)}
+                setPreviewPaneHeight={setPreviewPaneHeight}
               />
 
               <NoteEditor
+                previewPaneHeight={previewPaneHeight}
                 currentNote={notes.find((note) => note.id === currentNoteId)}
                 updateTitle={updateNoteTitle}
                 updateBody={updateNoteBody}
