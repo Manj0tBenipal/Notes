@@ -3,23 +3,34 @@ import { Editor } from "@tinymce/tinymce-react";
 
 export default function NoteEditor(props) {
   const [screenHeight, setScreenHeight] = useState(window.innerHeight);
+  const [controlsHeight, setControlsHeight] = useState(0);
   const editorRef = useRef(null);
   const handleEditorSave = () => {
     const editorContent = editorRef.current.getContent();
     props.updateBody(editorContent);
   };
+  const controlsRef = useRef(null);
   useEffect(() => {
     function handleResize() {
       setScreenHeight(window.innerHeight);
     }
+    function handleControlHeight() {
+      const height = controlsRef.current.offsetHeight;
+      console.log(height);
+      setControlsHeight(height);
+    }
+    window.addEventListener("resize", handleControlHeight);
     window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
   }, []);
-  const editorHeight = screenHeight - props.previewPaneHeight;
-  console.log(editorHeight);
+  const editorHeight = screenHeight - props.tabsHeight - controlsHeight - 200;
+  console.log(screenHeight, editorHeight, props.tabsHeight, controlsHeight);
+
   return (
     <section className="editor-pane">
-      <div className="controls">
+      <div className="controls" ref={controlsRef}>
         <input
           name="title"
           type="text"
@@ -71,7 +82,7 @@ export default function NoteEditor(props) {
             "alignleft aligncenter alignright alignjustify | " +
             "bullist numlist checklist outdent indent | removeformat | a11ycheck code table help",
           content_style:
-            "body { font-family:Helvetica,Arial,sans-serif; font-size:14px }",
+            "body { font-family:Calibri,Arial,sans-serif; font-size:16px }",
         }}
       />
     </section>

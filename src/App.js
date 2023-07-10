@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import NoteEditor from "./components/NoteEditor";
 import NoteList from "./components/NoteList";
 import "./App.css";
@@ -13,8 +13,8 @@ export default function App() {
   );
   const [isInPreview, setIsInPreview] = useState(true);
   const [screenWidth, setScreenWidth] = useState(window.innerWidth);
-  const [previewPaneHeight, setPreviewPaneHeight] = useState(0);
-
+  const [tabsHeight, setTabsHeight] = useState(0);
+  const tabsRef = useRef(null);
   useEffect(() => {
     const unsubscribe = onSnapshot(notesCollection, (snapshot) => {
       const notes = snapshot.docs
@@ -40,6 +40,14 @@ export default function App() {
       setCurrentNoteId(updatedNotes[0].id);
     }
   }, [notes]);
+  useEffect(() => {
+    function handleHeightChange() {
+      const height = tabsRef.current.offsetHeight;
+      setTabsHeight(height);
+    }
+    window.addEventListener("resize", handleHeightChange);
+    return () => window.removeEventListener("resize", handleHeightChange);
+  }, []);
 
   async function updateNoteBody(text) {
     const docRef = doc(db, "notes", currentNoteId);
@@ -100,7 +108,7 @@ export default function App() {
           />
 
           <div className="editor-preview">
-            <div className="tab-section">
+            <div ref={tabsRef} className="tab-section">
               <button
                 className={`tabs ${isInPreview ? "selected" : ""}`}
                 onClick={() => setIsInPreview(true)}
@@ -126,6 +134,7 @@ export default function App() {
                 updateBody={updateNoteBody}
                 addNote={addNewNote}
                 deleteNote={deleteTheNote}
+                tabsHeight={tabsHeight}
               />
             )}
           </div>
