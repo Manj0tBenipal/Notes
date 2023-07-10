@@ -20,17 +20,6 @@ export default function NoteEditor(props) {
   return (
     <section className="editor-pane">
       <div className="controls">
-        <button className="button" onClick={props.deleteNote}>
-          Delete
-        </button>
-        <button className="button" onClick={handleEditorSave}>
-          Save
-        </button>
-        <button className="button" onClick={props.addNote}>
-          Add
-        </button>
-      </div>
-      <div>
         <input
           name="title"
           type="text"
@@ -39,6 +28,9 @@ export default function NoteEditor(props) {
           value={props.currentNote.title}
           onChange={(event) => props.updateTitle(event.target.value)}
         />
+        <button className="button" onClick={handleEditorSave}>
+          Save
+        </button>
       </div>
       <Editor
         className="tiny-editor"

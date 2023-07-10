@@ -77,12 +77,12 @@ export default function App() {
     setCurrentNoteId(docRef.id);
   }
 
-  async function deleteTheNote() {
-    const nextNoteIndex = notes.findIndex((note) => note.id !== currentNoteId);
+  async function deleteTheNote(id) {
+    const nextNoteIndex = notes.findIndex((note) => note.id !== id);
     const nextNoteId = nextNoteIndex !== -1 ? notes[nextNoteIndex].id : "";
     setCurrentNoteId(nextNoteId);
 
-    const docRef = doc(db, "notes", currentNoteId);
+    const docRef = doc(db, "notes", id);
     await deleteDoc(docRef);
   }
 
@@ -94,56 +94,41 @@ export default function App() {
             notes={notes}
             currentNoteId={currentNoteId}
             setCurrentNoteId={setCurrentNoteId}
+            isInPreview={setIsInPreview}
+            deleteNote={deleteTheNote}
+            createNewNote={addNewNote}
           />
 
-          {screenWidth >= 900 ? (
-            <div className="ls-right-preview">
+          <div className="editor-preview">
+            <div className="tab-section">
+              <button
+                className={`tabs ${isInPreview ? "selected" : ""}`}
+                onClick={() => setIsInPreview(true)}
+              >
+                Preview
+              </button>
+              <button
+                className={`tabs ${isInPreview ? "" : "selected"}`}
+                onClick={() => setIsInPreview(false)}
+              >
+                Edit
+              </button>
+            </div>
+
+            {isInPreview ? (
               <PreviewPane
                 note={notes.find((note) => note.id === currentNoteId)}
-                setPreviewPaneHeight={setPreviewPaneHeight}
               />
-
+            ) : (
               <NoteEditor
-                previewPaneHeight={previewPaneHeight}
                 currentNote={notes.find((note) => note.id === currentNoteId)}
                 updateTitle={updateNoteTitle}
                 updateBody={updateNoteBody}
                 addNote={addNewNote}
                 deleteNote={deleteTheNote}
               />
-            </div>
-          ) : (
-            <div className="ss-down-preview">
-              <div className="tab-section">
-                <button
-                  className={`tabs ${isInPreview ? "selected" : ""}`}
-                  onClick={() => setIsInPreview(true)}
-                >
-                  Preview
-                </button>
-                <button
-                  className={`tabs ${isInPreview ? "" : "selected"}`}
-                  onClick={() => setIsInPreview(false)}
-                >
-                  Edit
-                </button>
-              </div>
-
-              {isInPreview ? (
-                <PreviewPane
-                  note={notes.find((note) => note.id === currentNoteId)}
-                />
-              ) : (
-                <NoteEditor
-                  currentNote={notes.find((note) => note.id === currentNoteId)}
-                  updateTitle={updateNoteTitle}
-                  updateBody={updateNoteBody}
-                  addNote={addNewNote}
-                  deleteNote={deleteTheNote}
-                />
-              )}
-            </div>
-          )}
+            )}
+          </div>
         </div>
       ) : (
         <div className="no-notes">
