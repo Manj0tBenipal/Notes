@@ -8,6 +8,14 @@
   height: 100%;
   margin: 0;
 }
+.notes-icon {
+  height: 3rem;
+  aspect-ratio: 1/1;
+  object-fit: cover;
+  padding: 0.3rem;
+  border: 1px solid var(--header-font);
+  border-radius: 50%;
+}
 .note-list-header {
   display: flex;
   width: 100%;
@@ -185,4 +193,29 @@
 .editor-preview {
   flex-grow: 1;
   height: 100%;
+}
+
+@media screen and (min-width: 320px) and (max-width: 768px) {
+  .tab-section {
+    position: fixed;
+    bottom: 0px;
+    align-items: center;
+    justify-content: space-between;
+    z-index: 3;
+  }
+  .tabs {
+    font-size: 1rem;
+  }
+  
+  .note-list {
+    position: absolute;
+    z-index: 2;
+    background-color: white;
+  }
+  .editor-pane {
+    z-index: 0;
+  }
+  .preview-pane {
+    z-index: 0;
+  }
 }

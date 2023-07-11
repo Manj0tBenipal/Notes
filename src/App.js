@@ -5,6 +5,7 @@ import "./App.css";
 import { addDoc, deleteDoc, doc, onSnapshot, setDoc } from "firebase/firestore";
 import { db, notesCollection } from "./firebase";
 import PreviewPane from "./components/PreviewPane";
+import notebook from "./img/notebook.png";
 
 export default function App() {
   const [notes, setNotes] = useState([]);
@@ -14,6 +15,7 @@ export default function App() {
   const [isInPreview, setIsInPreview] = useState(true);
   const [screenWidth, setScreenWidth] = useState(window.innerWidth);
   const [tabsHeight, setTabsHeight] = useState(0);
+  const [notesTabVisibility, setNotesTabVisibility] = useState(true);
   const tabsRef = useRef(null);
   useEffect(() => {
     const unsubscribe = onSnapshot(notesCollection, (snapshot) => {
@@ -98,17 +100,36 @@ export default function App() {
     <>
       {currentNoteId !== "" && notes.length > 0 ? (
         <div className="container">
-          <NoteList
-            notes={notes}
-            currentNoteId={currentNoteId}
-            setCurrentNoteId={setCurrentNoteId}
-            isInPreview={setIsInPreview}
-            deleteNote={deleteTheNote}
-            createNewNote={addNewNote}
-          />
+          {screenWidth > 720 && (
+            <NoteList
+              notes={notes}
+              currentNoteId={currentNoteId}
+              setCurrentNoteId={setCurrentNoteId}
+              isInPreview={setIsInPreview}
+              deleteNote={deleteTheNote}
+              createNewNote={addNewNote}
+            />
+          )}
 
+          {screenWidth < 720 && notesTabVisibility && (
+            <NoteList
+              notes={notes}
+              currentNoteId={currentNoteId}
+              setCurrentNoteId={setCurrentNoteId}
+              isInPreview={setIsInPreview}
+              deleteNote={deleteTheNote}
+              createNewNote={addNewNote}
+            />
+          )}
           <div className="editor-preview">
             <div ref={tabsRef} className="tab-section">
+              {screenWidth < 720 && (
+                <img
+                  className="notes-icon"
+                  src={notebook}
+                  onClick={() => setNotesTabVisibility((a) => !a)}
+                />
+              )}
               <button
                 className={`tabs ${isInPreview ? "selected" : ""}`}
                 onClick={() => setIsInPreview(true)}
