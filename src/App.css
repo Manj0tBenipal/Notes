@@ -129,7 +129,7 @@
   transition: border 1s ease;
   cursor: pointer;
   font-weight: 100;
-  color: var(--border-primary);
+  color: var(--header-font);
   padding: 0.6rem 1rem;
   margin-inline: 1rem;
 }
@@ -206,7 +206,7 @@
   .tabs {
     font-size: 1rem;
   }
-  
+
   .note-list {
     position: absolute;
     z-index: 2;

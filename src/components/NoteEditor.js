@@ -1,12 +1,14 @@
 import React, { useRef, useEffect, useState } from "react";
 import { Editor } from "@tinymce/tinymce-react";
-
+import tick from "../img/tick.png";
 export default function NoteEditor(props) {
   const [screenHeight, setScreenHeight] = useState(window.innerHeight);
   const [controlsHeight, setControlsHeight] = useState(0);
+  const [isSaved, setIsSaved] = useState(false);
   const editorRef = useRef(null);
   const handleEditorSave = () => {
     const editorContent = editorRef.current.getContent();
+    setIsSaved(true);
     props.updateBody(editorContent);
   };
   const controlsRef = useRef(null);
@@ -21,10 +23,18 @@ export default function NoteEditor(props) {
     }
     window.addEventListener("resize", handleControlHeight);
     window.addEventListener("resize", handleResize);
+
     return () => {
       window.removeEventListener("resize", handleResize);
+      window.removeEventListener("resize", handleControlHeight);
     };
   }, []);
+  useEffect(() => {
+    const saved = setTimeout(() => {
+      setIsSaved(false);
+    }, 2000);
+    return () => clearTimeout(saved);
+  }, [isSaved]);
   const editorHeight = screenHeight - props.tabsHeight - controlsHeight - 200;
   console.log(screenHeight, editorHeight, props.tabsHeight, controlsHeight);
 
@@ -39,9 +49,13 @@ export default function NoteEditor(props) {
           value={props.currentNote.title}
           onChange={(event) => props.updateTitle(event.target.value)}
         />
-        <button className="button" onClick={handleEditorSave}>
-          Save
-        </button>
+        {isSaved ? (
+          <img className="save-icon" src={tick} />
+        ) : (
+          <button className="button" onClick={handleEditorSave}>
+            Save
+          </button>
+        )}
       </div>
       <Editor
         className="tiny-editor"
@@ -82,7 +96,7 @@ export default function NoteEditor(props) {
             "alignleft aligncenter alignright alignjustify | " +
             "bullist numlist checklist outdent indent | removeformat | a11ycheck code table help",
           content_style:
-            "body { font-family:Calibri,Arial,sans-serif; font-size:16px }",
+            "body { font-family:Arial,sans-serif; font-size:22px }",
         }}
       />
     </section>
