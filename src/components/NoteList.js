@@ -9,6 +9,7 @@ export default function NoteList(props) {
     id: "",
     hasActionVisible: false,
   });
+
   useEffect(() => {
     const interval = setInterval(() => {
       setActionMenu((prev) => ({ ...prev, hasActionVisible: false }));
@@ -38,7 +39,7 @@ export default function NoteList(props) {
         key={note.id}
       >
         <button
-          className="note-selector-title"
+          className={`note-selector-title ${props.darkMode ? "dark" :""}`}
           key={note.id}
           onClick={() => props.setCurrentNoteId(note.id)}
         >

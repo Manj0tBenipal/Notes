@@ -11,6 +11,52 @@ export default function NoteEditor(props) {
     setIsSaved(true);
     props.updateBody(editorContent);
   };
+  const editorHeight = screenHeight - props.tabsHeight - controlsHeight - 200;
+  const init = (() => {
+    const init = {
+      height: editorHeight,
+      menubar: true,
+
+      plugins: [
+        "a11ychecker",
+        "advlist",
+        "advcode",
+        "advtable",
+        "autolink",
+        "checklist",
+        "export",
+        "lists",
+        "link",
+        "image",
+        "charmap",
+        "preview",
+        "anchor",
+        "searchreplace",
+        "visualblocks",
+        "powerpaste",
+        "fullscreen",
+        "formatpainter",
+        "insertdatetime",
+        "media",
+        "table",
+        "help",
+        "wordcount",
+      ],
+
+      toolbar:
+        "undo redo | casechange blocks | bold italic backcolor | " +
+        "alignleft aligncenter alignright alignjustify | " +
+        "bullist numlist checklist outdent indent | removeformat | a11ycheck code table help",
+      content_style: "body { font-family:Arial,sans-serif; font-size:22px }",
+    };
+    console.log(props.darkMode);
+    const obj = props.darkMode
+      ? { ...init, skin: "oxide-dark", content_css: "dark" }
+      : { ...init };
+    console.log({ ...obj });
+    return { ...obj };
+  })();
+
   const controlsRef = useRef(null);
   useEffect(() => {
     function handleResize() {
@@ -35,8 +81,6 @@ export default function NoteEditor(props) {
     }, 2000);
     return () => clearTimeout(saved);
   }, [isSaved]);
-  const editorHeight = screenHeight - props.tabsHeight - controlsHeight - 200;
-  console.log(screenHeight, editorHeight, props.tabsHeight, controlsHeight);
 
   return (
     <section className="editor-pane">
@@ -44,13 +88,13 @@ export default function NoteEditor(props) {
         <input
           name="title"
           type="text"
-          className="title-box"
+          className={`title-box ${props.darkMode ? "dark" : ""}`}
           placeholder="Title"
           value={props.currentNote.title}
           onChange={(event) => props.updateTitle(event.target.value)}
         />
         {isSaved ? (
-          <img className="save-icon" src={tick} />
+          <img className="save-icon" src={tick} alt="saved icon" />
         ) : (
           <button className="button" onClick={handleEditorSave}>
             Save
@@ -62,42 +106,7 @@ export default function NoteEditor(props) {
         key="blbpb8cgs2ltxcqxjpdhxyqk0yb2tjkfl3ujaes5pz8gaj4u"
         onInit={(evt, editor) => (editorRef.current = editor)}
         initialValue={props.currentNote.body}
-        init={{
-          height: editorHeight,
-          menubar: false,
-          plugins: [
-            "a11ychecker",
-            "advlist",
-            "advcode",
-            "advtable",
-            "autolink",
-            "checklist",
-            "export",
-            "lists",
-            "link",
-            "image",
-            "charmap",
-            "preview",
-            "anchor",
-            "searchreplace",
-            "visualblocks",
-            "powerpaste",
-            "fullscreen",
-            "formatpainter",
-            "insertdatetime",
-            "media",
-            "table",
-            "help",
-            "wordcount",
-          ],
-
-          toolbar:
-            "undo redo | casechange blocks | bold italic backcolor | " +
-            "alignleft aligncenter alignright alignjustify | " +
-            "bullist numlist checklist outdent indent | removeformat | a11ycheck code table help",
-          content_style:
-            "body { font-family:Arial,sans-serif; font-size:22px }",
-        }}
+        init={init}
       />
     </section>
   );

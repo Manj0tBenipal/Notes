@@ -6,6 +6,8 @@ import { addDoc, deleteDoc, doc, onSnapshot, setDoc } from "firebase/firestore";
 import { db, notesCollection } from "./firebase";
 import PreviewPane from "./components/PreviewPane";
 import notebook from "./img/notebook.png";
+import darkmode from "./img/dark-mode.png";
+import lightmode from "./img/light-mode.png";
 
 export default function App() {
   const [notes, setNotes] = useState([]);
@@ -16,7 +18,9 @@ export default function App() {
   const [screenWidth, setScreenWidth] = useState(window.innerWidth);
   const [tabsHeight, setTabsHeight] = useState(0);
   const [notesTabVisibility, setNotesTabVisibility] = useState(true);
+  const [darkMode, setDarkMode] = useState(false);
   const tabsRef = useRef(null);
+
   useEffect(() => {
     const unsubscribe = onSnapshot(notesCollection, (snapshot) => {
       const notes = snapshot.docs
@@ -99,8 +103,8 @@ export default function App() {
   return (
     <>
       {currentNoteId !== "" && notes.length > 0 ? (
-        <div className="container">
-          {screenWidth > 720 && (
+        <div className={`container ${darkMode ? "dark" : ""}`}>
+          {screenWidth > 720 || (screenWidth < 720 && notesTabVisibility) ? (
             <NoteList
               notes={notes}
               currentNoteId={currentNoteId}
@@ -108,19 +112,9 @@ export default function App() {
               isInPreview={setIsInPreview}
               deleteNote={deleteTheNote}
               createNewNote={addNewNote}
+              darkMode={darkMode}
             />
-          )}
-
-          {screenWidth < 720 && notesTabVisibility && (
-            <NoteList
-              notes={notes}
-              currentNoteId={currentNoteId}
-              setCurrentNoteId={setCurrentNoteId}
-              isInPreview={setIsInPreview}
-              deleteNote={deleteTheNote}
-              createNewNote={addNewNote}
-            />
-          )}
+          ) : null}
           <div className="editor-preview">
             <div ref={tabsRef} className="tab-section">
               {screenWidth < 720 && (
@@ -128,25 +122,42 @@ export default function App() {
                   className="notes-icon"
                   src={notebook}
                   onClick={() => setNotesTabVisibility((a) => !a)}
+                  alt="notes icon"
                 />
               )}
-              <button
-                className={`tabs ${isInPreview ? "selected" : ""}`}
-                onClick={() => setIsInPreview(true)}
-              >
-                Preview
-              </button>
-              <button
-                className={`tabs ${isInPreview ? "" : "selected"}`}
-                onClick={() => setIsInPreview(false)}
-              >
-                Edit
-              </button>
+
+              <div>
+                <button
+                  className={`tabs ${isInPreview ? "selected" : ""} ${
+                    darkMode ? "dark" : ""
+                  }`}
+                  onClick={() => setIsInPreview(true)}
+                >
+                  Preview
+                </button>
+                <button
+                  className={`tabs ${isInPreview ? "" : "selected"} ${
+                    darkMode ? "dark" : ""
+                  }`}
+                  onClick={() => setIsInPreview(false)}
+                >
+                  Edit
+                </button>
+              </div>
+              <div>
+                <img
+                  className="dark-mode-toggler"
+                  onClick={() => setDarkMode((a) => !a)}
+                  src={darkMode ? lightmode : darkmode}
+                  alt="toggle dark mode"
+                />
+              </div>
             </div>
 
             {isInPreview ? (
               <PreviewPane
                 note={notes.find((note) => note.id === currentNoteId)}
+                darkMode={darkMode}
               />
             ) : (
               <NoteEditor
@@ -156,6 +167,7 @@ export default function App() {
                 addNote={addNewNote}
                 deleteNote={deleteTheNote}
                 tabsHeight={tabsHeight}
+                darkMode={darkMode}
               />
             )}
           </div>
