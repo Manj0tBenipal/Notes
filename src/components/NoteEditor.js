@@ -12,51 +12,46 @@ export default function NoteEditor(props) {
     props.updateBody(editorContent);
   };
   const editorHeight = screenHeight - props.tabsHeight - controlsHeight - 200;
-  const init = (() => {
-    const init = {
-      height: editorHeight,
-      menubar: true,
-
-      plugins: [
-        "a11ychecker",
-        "advlist",
-        "advcode",
-        "advtable",
-        "autolink",
-        "checklist",
-        "export",
-        "lists",
-        "link",
-        "image",
-        "charmap",
-        "preview",
-        "anchor",
-        "searchreplace",
-        "visualblocks",
-        "powerpaste",
-        "fullscreen",
-        "formatpainter",
-        "insertdatetime",
-        "media",
-        "table",
-        "help",
-        "wordcount",
-      ],
-
-      toolbar:
-        "undo redo | casechange blocks | bold italic backcolor | " +
-        "alignleft aligncenter alignright alignjustify | " +
-        "bullist numlist checklist outdent indent | removeformat | a11ycheck code table help",
-      content_style: "body { font-family:Arial,sans-serif; font-size:22px }",
-    };
-    console.log(props.darkMode);
+  const [init, setInit] = useState({
+    height: editorHeight,
+    menubar: true,
+    plugins: [
+      "a11ychecker",
+      "advlist",
+      "advcode",
+      "advtable",
+      "autolink",
+      "checklist",
+      "export",
+      "lists",
+      "link",
+      "image",
+      "charmap",
+      "preview",
+      "anchor",
+      "searchreplace",
+      "visualblocks",
+      "powerpaste",
+      "fullscreen",
+      "formatpainter",
+      "insertdatetime",
+      "media",
+      "table",
+      "help",
+      "wordcount",
+    ],
+    toolbar:
+      "undo redo | casechange blocks | bold italic backcolor | " +
+      "alignleft aligncenter alignright alignjustify | " +
+      "bullist numlist checklist outdent indent | removeformat | a11ycheck code table help",
+    content_style: "body { font-family:Arial,sans-serif; font-size:22px }",
+  });
+  useEffect(() => {
     const obj = props.darkMode
       ? { ...init, skin: "oxide-dark", content_css: "dark" }
       : { ...init };
-    console.log({ ...obj });
-    return { ...obj };
-  })();
-
+    setInit({ ...obj });
+  }, [props.darkMode]);
   const controlsRef = useRef(null);
   useEffect(() => {
     function handleResize() {
@@ -81,7 +76,7 @@ export default function NoteEditor(props) {
     }, 2000);
     return () => clearTimeout(saved);
   }, [isSaved]);
-
+  console.log("i rendered");
   return (
     <section className="editor-pane">
       <div className="controls" ref={controlsRef}>

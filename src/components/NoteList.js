@@ -13,9 +13,8 @@ export default function NoteList(props) {
   useEffect(() => {
     const interval = setInterval(() => {
       setActionMenu((prev) => ({ ...prev, hasActionVisible: false }));
-    }, 4000); // Specify the interval duration in milliseconds (e.g., 1000ms = 1 second)
+    }, 4000);
 
-    // Cleanup function to clear the interval when the component unmounts or when the effect is re-run
     return () => {
       clearInterval(interval);
     };
@@ -39,7 +38,7 @@ export default function NoteList(props) {
         key={note.id}
       >
         <button
-          className={`note-selector-title ${props.darkMode ? "dark" :""}`}
+          className={`note-selector-title ${props.darkMode ? "dark" : ""}`}
           key={note.id}
           onClick={() => props.setCurrentNoteId(note.id)}
         >
