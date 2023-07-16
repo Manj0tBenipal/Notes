@@ -81,6 +81,7 @@
   text-overflow: ellipsis;
   text-align: left;
   font-family: "Ubuntu", sans-serif;
+  cursor: pointer;
 }
 .note-selector-title.dark {
   color: white;
@@ -130,15 +131,17 @@
   border-bottom: 1px solid var(--border-primary);
 }
 .tabs {
+  font-family: "Ubuntu", sans-serif;
   border: none;
   background: none;
-  font-size: 1.35rem;
+  font-size: 1.1rem;
   transition: border 1s ease;
   cursor: pointer;
   font-weight: 100;
   color: var(--header-font);
-  padding: 0.6rem 1rem;
+  padding: 0.4rem 1.1rem;
   margin-inline: 1rem;
+  border-radius: 3px;
 }
 .tabs.selected {
   font-weight: 300;
@@ -146,7 +149,12 @@
   background-color: var(--border-primary);
 }
 .dark-mode-toggler {
-  height: 35px;
+  height: 30px;
+  aspect-ratio: 1/1;
+  cursor: pointer;
+  border: 2px solid var(--header-font) ;
+  border-radius: 50%;
+  padding: 2px;
 }
 .title-box {
   width: 30%;
@@ -160,11 +168,13 @@
 }
 .title-box.dark {
   background: rgb(202, 223, 246);
+  border: none;
 }
 .preview-pane {
+  width: 100%;
   height: 90%;
   overflow-y: auto;
-  padding: 1rem;
+  padding: 2rem;
 }
 .preview-pane.dark {
   color: white;
@@ -179,8 +189,7 @@
 
 .button {
   border: none;
-  border: 1px solid grey;
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   background-color: var(--border-primary);
   padding: 0.3rem 0.5rem;
   border-radius: 3px;
@@ -202,10 +211,9 @@
 }
 
 .preview-mode-heading {
-  margin: 1rem;
+  margin-block: 1rem;
 }
 .preview-mode-body {
-  margin: 1rem;
   font-size: 1.2rem;
 }
 .editor-preview {

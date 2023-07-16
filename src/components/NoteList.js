@@ -17,7 +17,7 @@ export default function NoteList(props) {
 
     return () => {
       clearInterval(interval);
-    };
+    }; 
   }, []);
   const noteList = props.notes.map((note) => {
     const visible = {
