@@ -146,17 +146,17 @@
   background-color: var(--border-primary);
 }
 .dark-mode-toggler {
-  height: 50px;
+  height: 35px;
 }
 .title-box {
   width: 30%;
   display: block;
   margin: 1rem;
-  line-height: 1.6rem;
+  line-height: 1.2rem;
   border: none;
-  padding: 0.5rem;
-
-  font-size: 1.22rem;
+  padding: 0.3rem;
+  border: 1px solid var(--border-primary);
+  font-size: 1.2rem;
 }
 .title-box.dark {
   background: rgb(202, 223, 246);

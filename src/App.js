@@ -55,6 +55,17 @@ export default function App() {
     return () => window.removeEventListener("resize", handleHeightChange);
   }, []);
 
+  //Applying dark mode to editor requires unmounting the NoteEditor
+  //Achieved through changing the view mode from preview to editor
+  //and then reverting to original state
+  function toggleDarkMode() {
+    const prevTab = isInPreview;
+    setDarkMode((prevMode) => !prevMode);
+    setIsInPreview(true);
+    setTimeout(() => {
+      setIsInPreview(prevTab);
+    }, 0.2);
+  }
   async function updateNoteBody(text) {
     const docRef = doc(db, "notes", currentNoteId);
     await setDoc(
@@ -147,7 +158,7 @@ export default function App() {
               <div>
                 <img
                   className="dark-mode-toggler"
-                  onClick={() => setDarkMode((a) => !a)}
+                  onClick={() => toggleDarkMode()}
                   src={darkMode ? lightmode : darkmode}
                   alt="toggle dark mode"
                 />

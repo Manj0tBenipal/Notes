@@ -2,6 +2,7 @@ import React, { useRef, useEffect, useState } from "react";
 import { Editor } from "@tinymce/tinymce-react";
 import tick from "../img/tick.png";
 export default function NoteEditor(props) {
+  const [isEditorVisible, setIsEditorVisible] = useState(true);
   const [screenHeight, setScreenHeight] = useState(window.innerHeight);
   const [controlsHeight, setControlsHeight] = useState(0);
   const [isSaved, setIsSaved] = useState(false);
@@ -51,6 +52,11 @@ export default function NoteEditor(props) {
       ? { ...init, skin: "oxide-dark", content_css: "dark" }
       : { ...init };
     setInit({ ...obj });
+    //Unmounting and mounting TinyMCE to change the theme which otherwise does not take affect
+    setIsEditorVisible(false);
+    setTimeout(() => {
+      setIsEditorVisible(true);
+    });
   }, [props.darkMode]);
   const controlsRef = useRef(null);
   useEffect(() => {
@@ -76,7 +82,7 @@ export default function NoteEditor(props) {
     }, 2000);
     return () => clearTimeout(saved);
   }, [isSaved]);
-  console.log("i rendered");
+
   return (
     <section className="editor-pane">
       <div className="controls" ref={controlsRef}>
@@ -96,13 +102,15 @@ export default function NoteEditor(props) {
           </button>
         )}
       </div>
-      <Editor
-        className="tiny-editor"
-        key="blbpb8cgs2ltxcqxjpdhxyqk0yb2tjkfl3ujaes5pz8gaj4u"
-        onInit={(evt, editor) => (editorRef.current = editor)}
-        initialValue={props.currentNote.body}
-        init={init}
-      />
+      {isEditorVisible && (
+        <Editor
+          className="tiny-editor"
+          key="blbpb8cgs2ltxcqxjpdhxyqk0yb2tjkfl3ujaes5pz8gaj4u"
+          onInit={(evt, editor) => (editorRef.current = editor)}
+          initialValue={props.currentNote.body}
+          init={init}
+        />
+      )}
     </section>
   );
 }
