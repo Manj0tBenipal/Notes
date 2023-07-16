@@ -30,30 +30,30 @@ export default function App() {
         .sort((a, b) => b.updatedAt - a.updatedAt);
       setNotes(notes);
     });
-    return unsubscribe;
-  }, []);
-
-  useEffect(() => {
-    function handleResize() {
+    function handleWidthChange() {
       setScreenWidth(window.innerWidth);
     }
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
+    window.addEventListener("resize", handleWidthChange);
+    function handleHeightChange() {
+      const height = tabsRef.current.offsetHeight;
+      setTabsHeight(height);
+    }
+    window.addEventListener("resize", handleHeightChange);
+    function cleanup() {
+      unsubscribe();
+      window.removeEventListener("resize", handleWidthChange);
+      window.removeEventListener("resize", handleHeightChange);
+    }
+
+    return cleanup;
   }, []);
+
   useEffect(() => {
     const updatedNotes = notes;
     if (currentNoteId === "" && updatedNotes.length > 0) {
       setCurrentNoteId(updatedNotes[0].id);
     }
   }, [notes]);
-  useEffect(() => {
-    function handleHeightChange() {
-      const height = tabsRef.current.offsetHeight;
-      setTabsHeight(height);
-    }
-    window.addEventListener("resize", handleHeightChange);
-    return () => window.removeEventListener("resize", handleHeightChange);
-  }, []);
 
   //Applying dark mode to editor requires unmounting the NoteEditor
   //Achieved through changing the view mode from preview to editor
@@ -67,7 +67,6 @@ export default function App() {
     }, 0.2);
   }
 
-  
   async function updateNoteBody(text) {
     const docRef = doc(db, "notes", currentNoteId);
     await setDoc(
