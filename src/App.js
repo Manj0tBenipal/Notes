@@ -66,6 +66,8 @@ export default function App() {
       setIsInPreview(prevTab);
     }, 0.2);
   }
+
+  
   async function updateNoteBody(text) {
     const docRef = doc(db, "notes", currentNoteId);
     await setDoc(

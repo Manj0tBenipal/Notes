@@ -164,6 +164,7 @@
 .preview-pane {
   height: 90%;
   overflow-y: auto;
+  padding: 1rem;
 }
 .preview-pane.dark {
   color: white;
