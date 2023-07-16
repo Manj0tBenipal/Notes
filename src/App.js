@@ -11,6 +11,7 @@ import lightmode from "./img/light-mode.png";
 
 export default function App() {
   const [notes, setNotes] = useState([]);
+  const [tempNote, setTempNote] = useState("");
   const [currentNoteId, setCurrentNoteId] = useState(
     notes.length > 0 ? notes[0].id : ""
   );
@@ -33,17 +34,18 @@ export default function App() {
     function handleWidthChange() {
       setScreenWidth(window.innerWidth);
     }
-    window.addEventListener("resize", handleWidthChange);
     function handleHeightChange() {
       const height = tabsRef.current.offsetHeight;
       setTabsHeight(height);
     }
-    window.addEventListener("resize", handleHeightChange);
     function cleanup() {
       unsubscribe();
       window.removeEventListener("resize", handleWidthChange);
       window.removeEventListener("resize", handleHeightChange);
     }
+    window.addEventListener("resize", handleWidthChange);
+
+    window.addEventListener("resize", handleHeightChange);
 
     return cleanup;
   }, []);
@@ -180,6 +182,7 @@ export default function App() {
                 deleteNote={deleteTheNote}
                 tabsHeight={tabsHeight}
                 darkMode={darkMode}
+                setTempNote={setTempNote}
               />
             )}
           </div>

@@ -7,11 +7,7 @@ export default function NoteEditor(props) {
   const [controlsHeight, setControlsHeight] = useState(0);
   const [isSaved, setIsSaved] = useState(false);
   const editorRef = useRef(null);
-  const handleEditorSave = () => {
-    const editorContent = editorRef.current.getContent();
-    setIsSaved(true);
-    props.updateBody(editorContent);
-  };
+  const controlsRef = useRef(null);
   const editorHeight = screenHeight - props.tabsHeight - controlsHeight - 200;
   const [init, setInit] = useState({
     height: editorHeight,
@@ -47,6 +43,11 @@ export default function NoteEditor(props) {
       "bullist numlist checklist outdent indent | removeformat | a11ycheck code table help",
     content_style: "body { font-family:Arial,sans-serif; font-size:22px }",
   });
+  function handleEditorSave() {
+    const editorContent = editorRef.current.getContent();
+    setIsSaved(true);
+    props.updateBody(editorContent);
+  }
   useEffect(() => {
     const obj = props.darkMode
       ? { ...init, skin: "oxide-dark", content_css: "dark" }
@@ -58,7 +59,7 @@ export default function NoteEditor(props) {
       setIsEditorVisible(true);
     });
   }, [props.darkMode]);
-  const controlsRef = useRef(null);
+
   useEffect(() => {
     function handleResize() {
       setScreenHeight(window.innerHeight);
@@ -109,6 +110,7 @@ export default function NoteEditor(props) {
           onInit={(evt, editor) => (editorRef.current = editor)}
           initialValue={props.currentNote.body}
           init={init}
+          onEditorChange={props.setTempNote}
         />
       )}
     </section>
