@@ -110,7 +110,6 @@ export default function NoteEditor(props) {
           onInit={(evt, editor) => (editorRef.current = editor)}
           initialValue={props.currentNote.body}
           init={init}
-          onEditorChange={props.setTempNote}
         />
       )}
     </section>

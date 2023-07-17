@@ -11,7 +11,7 @@ import lightmode from "./img/light-mode.png";
 
 export default function App() {
   const [notes, setNotes] = useState([]);
-  const [tempNote, setTempNote] = useState("");
+
   const [currentNoteId, setCurrentNoteId] = useState(
     notes.length > 0 ? notes[0].id : ""
   );
@@ -182,7 +182,7 @@ export default function App() {
                 deleteNote={deleteTheNote}
                 tabsHeight={tabsHeight}
                 darkMode={darkMode}
-                setTempNote={setTempNote}
+
               />
             )}
           </div>
